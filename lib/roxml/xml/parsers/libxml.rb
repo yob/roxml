@@ -61,6 +61,10 @@ module ROXML
         child
       end
 
+      def register_namespace(prefix, uri)
+        LibXML::XML::Namespace.new(self, prefix, uri)
+      end
+
       alias_method :set_libxml_content, :content=
       def content=(string)
         set_libxml_content(string.gsub('&', '&amp;'))

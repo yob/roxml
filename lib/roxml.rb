@@ -80,6 +80,11 @@ module ROXML # :nodoc:
       # Returns a LibXML::XML::Node or a REXML::Element representing this object
       def to_xml(name = nil)
         returning XML::Node.new((name || self.class.tag_name).to_s) do |root|
+          if self.class.namespaces
+            self.class.namespaces.each do |entry|
+              root.register_namespace(entry[:prefix], entry[:uri])
+            end
+          end
           self.class.roxml_attrs.each do |attr|
             ref = attr.to_ref(self)
             v = ref.to_xml
@@ -134,6 +139,13 @@ module ROXML # :nodoc:
       #
       def xml_namespace(namespace)
         @roxml_namespace = namespace.to_s
+      end
+
+      def xml_register_namespace(xpath, prefix, uri)
+        @namespaces ||= []
+        @namespaces << {:xpath  => xpath,
+                        :prefix => prefix,
+                        :uri    => uri}
       end
 
       # Most xml documents have a consistent naming convention, for example, the node and
@@ -541,6 +553,12 @@ module ROXML # :nodoc:
       def roxml_namespace # :nodoc:
         @roxml_namespace || begin
           superclass.roxml_namespace if superclass.respond_to?(:roxml_namespace)
+        end
+      end
+
+      def namespaces # :nodoc:
+        @namespaces || begin
+          superclass.namespaces if superclass.respond_to?(:namespaces)
         end
       end
 
