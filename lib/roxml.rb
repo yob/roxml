@@ -1,6 +1,6 @@
 require 'uri'
 require 'active_support'
-require 'active_support/core_ext/string/starts_ends_with'
+require 'active_support/core_ext'
 
 require 'roxml/definition'
 require 'roxml/xml'
